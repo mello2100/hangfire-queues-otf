@@ -50,12 +50,7 @@ namespace Hangfire.Queues.OTF
             _options.ShutdownTimeout = new TimeSpan(0, 1, 0);   //1 minute
 
             //initializes an empty worker list
-            WorkerList = new Dictionary<string, int>();
-
-            //sets the hangfire configuration
-            GlobalConfiguration.Configuration
-                .UseColouredConsoleLogProvider()
-                .UseSqlServerStorage(@"Server=.\sqlexpress;Database=HangfireTest;User Id=sa;Password=senhadosa"); //TODO: must be set by app.config or similar
+            WorkerList = new Dictionary<string, int>();            
         }
 
         /// <summary>

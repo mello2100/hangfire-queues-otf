@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using JobsExample;
+using Hangfire;
 
 namespace ConsoleApp
 {
@@ -9,6 +10,11 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+            //sets the hangfire configuration
+            GlobalConfiguration.Configuration
+                .UseColouredConsoleLogProvider()
+                .UseSqlServerStorage(@"Server=.\sqlexpress;Database=HangfireTest;User Id=sa;Password=senhadosa");
+
             var server = new HangfireProcessingServer();
             var jm = new JobManager();
             jm.ConfigureJobs();
