@@ -37,48 +37,17 @@ namespace JobsExample
             Thread.Sleep(600);
         }
 
-        #endregion
-
-        #region Jobs
-
-        public static void ConfigureJobs()
-        {
-            RecurringJob.AddOrUpdate<Job>(x => x.JobGenerator(), Cron.Minutely);
-        }
-
-        public void JobGenerator()
+        public void JobGenerator(JobManager jm)
         {
             int qty = 1000;
 
-            P1MethodJobGenerator(qty);
-            P2MethodJobGenerator(qty);
-            P3MethodJobGenerator(qty);
-        }
-
-        public void P1MethodJobGenerator(int n)
-        {
-            for (int i = 0; i < n; i++)
-            {
-                BackgroundJob.Enqueue<Job>(x => x.P1Method(Guid.NewGuid().ToString()));
-            }
-        }
-
-        public void P2MethodJobGenerator(int n)
-        {
-            for (int i = 0; i < n; i++)
-            {
-                BackgroundJob.Enqueue<Job>(x => x.P2Method(Guid.NewGuid().ToString()));
-            }
-        }
-
-        public void P3MethodJobGenerator(int n)
-        {
-            for (int i = 0; i < n; i++)
-            {
-                BackgroundJob.Enqueue<Job>(x => x.P3Method(Guid.NewGuid().ToString()));
-            }
+            jm.P1MethodJobGenerator(qty);
+            jm.P2MethodJobGenerator(qty);
+            jm.P3MethodJobGenerator(qty);
         }
 
         #endregion
+
+        
     }
 }

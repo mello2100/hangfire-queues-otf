@@ -10,7 +10,8 @@ namespace ConsoleApp
         static void Main(string[] args)
         {
             var server = new HangfireProcessingServer();
-            Job.ConfigureJobs();
+            var jm = new JobManager();
+            jm.ConfigureJobs();
 
             int i = 0;
 
