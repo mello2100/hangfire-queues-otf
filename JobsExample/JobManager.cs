@@ -1,4 +1,5 @@
 ﻿using Hangfire;
+using Hangfire.Queues.OTF;
 using System;
 
 namespace JobsExample

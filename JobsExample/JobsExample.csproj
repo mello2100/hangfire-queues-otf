@@ -58,13 +58,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IJobManager.cs" />
     <Compile Include="JobManager.cs" />
     <Compile Include="Jobs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Hangfire.Queues.OTF\Hangfire.Queues.OTF.csproj">
+      <Project>{653b9cc6-ea50-41ef-b64b-2da4a7b0c2d0}</Project>
+      <Name>Hangfire.Queues.OTF</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
