@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 //Example: I'll try to capture the data on the fly. Please try to buy some aspirin somewhere on the fly today.
 namespace Hangfire.Queues.OTF
 {
+    /// <summary>
+    /// The main class of our project.
+    /// </summary>
     public class HangfireProcessingServer
     {
         #region Properties
@@ -25,6 +28,7 @@ namespace Hangfire.Queues.OTF
                 _options.ShutdownTimeout = value;
             }
         }
+
         public Dictionary<string, int> WorkerList { get; set; }
 
         #endregion
@@ -32,27 +36,34 @@ namespace Hangfire.Queues.OTF
         #region Fields
 
         private BackgroundProcessingServerOptions _options = new BackgroundProcessingServerOptions();
+
         private CancellationTokenSource _ct = new CancellationTokenSource();
 
         #endregion
 
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
         public HangfireProcessingServer()
         {
+            //default shutdown timeout
             _options.ShutdownTimeout = new TimeSpan(0, 1, 0);   //1 minute
 
+            //initializes an empty worker list
             WorkerList = new Dictionary<string, int>();
 
+            //sets the hangfire configuration
             GlobalConfiguration.Configuration
                 .UseColouredConsoleLogProvider()
-                .UseSqlServerStorage(@"Server=.\sqlexpress;Database=HangfireTest;User Id=sa;Password=senhadosa");
+                .UseSqlServerStorage(@"Server=.\sqlexpress;Database=HangfireTest;User Id=sa;Password=senhadosa"); //TODO: must be set by app.config or similar
         }
 
+        /// <summary>
+        /// When called, this method loads the new worker list configuration and reloads the hangfire server.
+        /// </summary>
         public void Reload()
         {
-            Console.WriteLine("Reloading...");
-
-            //TODO: Will retrieve from another way
-            List<IBackgroundProcess> processes = GetWorkers();
+            var processes = GetWorkers();
             
             _ct.Cancel();
             Task t = new Task(() => { HangfireServer(processes, _ct.Token); });
@@ -60,24 +71,36 @@ namespace Hangfire.Queues.OTF
             t.Start();
         }
 
+        /// <summary>
+        /// This method is actually a hangfire server.
+        /// </summary>
+        /// <param name="processes"></param>
+        /// <param name="c"></param>
         private void HangfireServer(List<IBackgroundProcess> processes, CancellationToken c)
         {
             using (var server = new BackgroundProcessingServer(JobStorage.Current, processes, new Dictionary<string, object>(), _options))
             {
                 while (c.IsCancellationRequested == false)
                 {
+                    //TODO: should we put a thread sleep here?
                 };
             }
         }
 
+        /// <summary>
+        /// Method that converts the worker list into an IBackgroundProcess list
+        /// </summary>
+        /// <returns></returns>
         private List<IBackgroundProcess> GetWorkers()
         {
+            //we must creat the list with some 'dafault' workers
             var processes = new List<IBackgroundProcess>
             {
                 new Worker("default"),
                 new RecurringJobScheduler()
             };
 
+            //iterates on worker list to insert on IBackgrounfProcess list
             foreach (var item in WorkerList)
             {
                 processes.AddRange(WorkersFactory.Create(item.Key, item.Value)); 
