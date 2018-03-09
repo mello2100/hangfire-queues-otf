@@ -1,4 +1,4 @@
-﻿namespace Hangfire.Queues.OTF
+﻿namespace JobsExample
 {
     /// <summary>
     /// Interface to expose a commom method to configure the jobs.
