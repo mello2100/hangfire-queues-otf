@@ -1,6 +1,7 @@
 ﻿using Hangfire.Server;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -59,6 +60,11 @@ namespace Hangfire.Queues.OTF
         public void Reload()
         {
             var processes = GetWorkers();
+            var properties = new Dictionary<string, object>()
+            {
+                { "Queues", WorkerList.Keys.ToArray() },
+                { "WorkerCount", WorkerList.Values.Sum() }
+            };
             
             _ct.Cancel();
             Task t = new Task(() => { HangfireServer(processes, _ct.Token); });
@@ -92,7 +98,8 @@ namespace Hangfire.Queues.OTF
             var processes = new List<IBackgroundProcess>
             {
                 new Worker("default"),
-                new RecurringJobScheduler()
+                new RecurringJobScheduler(),
+                new DelayedJobScheduler()
             };
 
             //iterates on worker list to insert on IBackgrounfProcess list
